@@ -21,16 +21,18 @@ $this->Html->addCrumb($thread->title);
                             ]); ?>
                             <br>
                             <span style="font-size:18px;" class="<?= $thread->user->primary_role->name; ?>">
-                                <?= $thread->user->username; ?>
+                                <?= $this->Html->link($thread->user->username, ['controller' => 'Users', 'action' =>'view', $thread->user->id], ['style' => 'color:inherit;']); ?>
                             </span>
                             <br>
                             <span
-                                class="label label-default label-<?= $thread->user->primary_role->name; ?>"><?= $thread->user->primary_role->name; ?></span>
+                                class="label label-default label-<?= $thread->user->primary_role->name; ?>">
+                                <?= $thread->user->primary_role->name; ?>
+                            </span>
                         </div>
                         <div class="media-body" style="padding:0px 10px;">
                             <small class="text-muted">
                                 <?= __('Aangemaakt op {0}', $thread->created_at->nice()); ?>
-                                <?php if(!is_null($thread->edit_by)): ?>
+                                <?php if($thread->updated_at != $thread->created_at): ?>
                                     <?= __('(Bewerkt, {0} door {1})', [$thread->updated_at->timeAgoInWords(), $thread->editor->username]); ?>
                                 <?php endif; ?>
                             </small>
@@ -54,17 +56,14 @@ $this->Html->addCrumb($thread->title);
                         'class' => 'btn btn-sm btn-primary',
                         'escape' => false
                     ]); ?>
-                    <?php if ($user->hasPermission('mod_index')): ?>
-                        <?= $this->Form->postLink('<i class="fa fa-lock"></i>', [
-                            'controller' => 'Threads',
-                            'action' => 'close',
-                            'prefix' => 'mod',
-                            $thread->id,
-                        ], [
-                            'class' => 'btn btn-sm btn-warning',
-                            'escape' => false
-                        ]); ?>
-                    <?php endif; ?>
+                    <?= $this->Html->link('<i class="fa fa-warning"></i>', [
+                        'controller' => 'Reports',
+                        'action' => 'add',
+                        $thread->id,
+                    ], [
+                        'class' => 'btn btn-sm btn-danger',
+                        'escape' => false
+                    ]); ?>
                     <?php if($thread->user->id == $user->id): ?>
                         <?= $this->Html->link('<i class="fa fa-pencil-square-o"></i>', [
                             'controller' => 'Threads',
@@ -88,10 +87,12 @@ $this->Html->addCrumb($thread->title);
                                 ]); ?>
                                 <br>
                             <span style="font-size:18px;"
-                                  class="<?= $comment->user->primary_role->name; ?>"><?= $comment->user->username; ?></span>
+                                  class="<?= $comment->user->primary_role->name; ?>"><?= $this->Html->link($comment->user->username, ['controller' => 'Users', 'action' =>'view', $comment->user->id], ['style' => 'color:inherit;']); ?></span>
                                 <br>
                             <span
-                                class="label label-default label-<?= $comment->user->primary_role->name; ?>"><?= $comment->user->primary_role->name; ?></span>
+                                class="label label-default label-<?= $comment->user->primary_role->name; ?>">
+                                <?= $comment->user->primary_role->name; ?>
+                            </span>
                             </div>
                             <div class="media-body" style="padding:0px 10px;">
                                 <small
@@ -110,10 +111,18 @@ $this->Html->addCrumb($thread->title);
                                     <?= $this->Html->link('<i class="fa fa-quote-left"></i>', [
                                         'controller' => 'Comments',
                                         'action' => 'quote',
-                                        $thread->id,
                                         $comment->id,
                                     ], [
                                         'class' => 'btn btn-xs btn-info',
+                                        'escape' => false
+                                    ]); ?>
+                                    <?= $this->Html->link('<i class="fa fa-warning"></i>', [
+                                        'controller' => 'Reports',
+                                        'action' => 'add',
+                                        $thread->id,
+                                        $comment->id,
+                                    ], [
+                                        'class' => 'btn btn-xs btn-danger',
                                         'escape' => false
                                     ]); ?>
                                     <?php if ($comment->user->id == $user->id || $user->hasPermission('mod_index')): ?>
@@ -153,10 +162,12 @@ $this->Html->addCrumb($thread->title);
                                     ]); ?>
                                     <br>
                             <span style="font-size:18px;"
-                                  class="<?= $comment->user->primary_role->name; ?>"><?= $comment->user->username; ?></span>
+                                  class="<?= $comment->user->primary_role->name; ?>"><?= $this->Html->link($comment->user->username, ['controller' => 'Users', 'action' =>'view', $comment->user->id], ['style' => 'color:inherit;']); ?></span>
                                     <br>
                             <span
-                                class="label label-default label-<?= $comment->user->primary_role->name; ?>"><?= $comment->user->primary_role->name; ?></span>
+                                class="label label-default label-<?= $comment->user->primary_role->name; ?>">
+                                <?= $comment->user->primary_role->name; ?>
+                            </span>
                                 </div>
                                 <div class="media-body" style="padding:0px 10px;">
                                     <small
@@ -230,22 +241,38 @@ $this->Html->addCrumb($thread->title);
                                 'class' => 'form-control'
                             ]); ?>
                         </fieldset>
-                        <fieldset class="form-group">
-                            <?php if($user->hasPermission('mod_index')): ?>
-                            <label class="c-input c-checkbox">
-                                <input name="close" type="checkbox">
-                                <span class="c-indicator"></span>
-                                Sluit dit topic
-                            </label>
-                            <?php endif; ?>
-                            <?= $this->Form->submit(__('Plaats reactie'), ['class' => 'btn btn-primary pull-right']); ?>
-                        </fieldset>
-
-
+                        <?= $this->Form->submit(__('Plaats reactie'), ['class' => 'btn btn-primary pull-right']); ?>
                         <?= $this->Form->end(); ?>
                     <?php else: ?>
                         <div class="alert alert-danger"><?= __('Sorry, maar deze thread is gesloten!'); ?></div>
                     <?php endif; ?>
+                    <fieldset class="form-group">
+                        <?php if($user->hasPermission('mod_threads_close')): ?>
+                            <?php if($thread->closed): ?>
+                                <?= $this->Form->postButton('<i class="fa fa-unlock"></i> Openen', [
+                                    'controller' => 'Threads',
+                                    'action' => 'open',
+                                    'prefix' => 'mod',
+                                    $thread->id,
+                                ], [
+                                    'class' => 'btn btn-sm btn-success',
+                                    'escape' => false,
+                                    'href' => ''
+                                ]); ?>
+                            <?php else: ?>
+                                <?= $this->Form->postButton('<i class="fa fa-lock"></i> Sluiten', [
+                                    'controller' => 'Threads',
+                                    'action' => 'close',
+                                    'prefix' => 'mod',
+                                    $thread->id,
+                                ], [
+                                    'class' => 'btn btn-sm btn-warning',
+                                    'escape' => false,
+                                ]); ?>
+                            <?php endif; ?>
+                        <?php endif; ?>
+
+                    </fieldset>
                 </div>
             </div>
 

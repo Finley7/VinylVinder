@@ -23,7 +23,6 @@ use Emojione\Ruleset;
 
 class UbbHelper extends Helper
 {
-    protected static $string = [];
 
     public static function parse($string, $emojione = true)
     {

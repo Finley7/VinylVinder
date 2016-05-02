@@ -137,31 +137,16 @@ class UsersController extends AppController
      * @return Object Redirects on successful add, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    /*public function view($id = null)
+    public function view($id = null)
     {
-        $user = new User($this->Auth->user());
-        $user = $this->Users->get($id, [
-            'contain' => ['Blogs', 'Comments', 'ProfileMessages', 'Roles']
-        ]);
-        $profileMessageRegistry = TableRegistry::get('ProfileMessages');
-        $profileMessage = $profileMessageRegistry->newEntity();
-        $user->profileMessages = $profileMessageRegistry->findByProfileId($id)->contain(['Users'])->all()->sortBy('created_at');
-        if($this->request->is('post')) {
-            $this->request->data['profile_id'] = $user->id;
-            $this->request->data['poster_id'] = $this->Auth->user('id');
-            $profileMessage = $profileMessageRegistry->patchEntity($profileMessage, $this->request->data);
-            if($profileMessageRegistry->save($profileMessage)) {
-                $this->Flash->success(__('You comment has been placed!'));
-                return $this->redirect(['action' => 'view', $user->id]);
-            }
-            else
-            {
-                $this->Flash->error(__('Something went wrong. Please, try again.'));
-            }
-        }
-        $this->set('profile', $user);
-        $this->set('profileMessage', $profileMessage);
-        $this->set('_serialize', ['profile', 'profileMessage']);
+        $profile = $this->Users->get($id, ['contain' => 'PrimaryRole']);
+
+        $threads = $this->Threads->findByAuthorId($profile->id);
+        $comments = $this->Comments->findByAuthorId($profile->id);
+
+        $this->set('page_parent', 'community');
+        $this->set(compact('profile', 'threads', 'comments'));
+        $this->set('title', __('Gebruiker {0}', $profile->username));
     }
     /**
      * Add method

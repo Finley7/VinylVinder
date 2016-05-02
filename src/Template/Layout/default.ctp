@@ -34,7 +34,8 @@
     <div class="container">
         <?= $this->Html->link("<i class=\"fa fa-play-circle\"></i> VinylVinder</a>", [
             'controller' => 'Pages',
-            'action' => 'landing'
+            'action' => 'landing',
+            'prefix' => false,
         ], [
             'class' => 'navbar-brand',
             'escape' => false
@@ -43,7 +44,8 @@
             <li class="<?= ($page_parent == 'home') ? 'nav-item active' : 'nav-item'; ?>">
                 <?= $this->Html->link(__(' Home'), [
                     'controller' => 'Pages',
-                    'action' => 'landing'
+                    'action' => 'landing',
+                    'prefix' => false,
                 ], [
                     'class' => 'nav-link',
                     'id' => 'home'
@@ -53,7 +55,8 @@
             <li class="<?= ($page_parent == 'search') ? 'nav-item active' : 'nav-item'; ?>">
                 <?= $this->Html->link(__(' Zoeken'), [
                     'controller' => 'Search',
-                    'action' => 'index'
+                    'action' => 'index',
+                    'prefix' => false,
                 ], [
                     'class' => 'nav-link',
                     'id' => 'search'
@@ -62,7 +65,8 @@
             <li class="nav-item <?= ($page_parent == 'community') ? 'nav-item active' : 'nav-item'; ?>">
                 <?= $this->Html->link(__(' Community'), [
                     'controller' => 'Forums',
-                    'action' => 'index'
+                    'action' => 'index',
+                    'prefix' => false,
                 ], [
                     'class' => 'nav-link',
                     'id' => 'community'
@@ -73,7 +77,8 @@
                     <?= $this->Html->link(' ' . $user->username, [
                         'controller' => 'Users',
                         'action' => 'view',
-                        $user->id
+                        $user->id,
+                        'prefix' => false,
                     ], [
                         'class' => 'nav-link',
                         'id' => 'user'
@@ -81,7 +86,8 @@
                 <?php else: ?>
                     <?= $this->Html->link(__(' Aanmelden'), [
                         'controller' => 'Users',
-                        'action' => 'login'
+                        'action' => 'login',
+                        'prefix' => false,
                     ], [
                         'class' => 'nav-link',
                         'id' => 'user'
@@ -93,7 +99,8 @@
                     <?php if (\Cake\Core\Configure::read('App.can_register')): ?>
                         <?= $this->Html->link(__(' Maak een account'), [
                             'controller' => 'Users',
-                            'action' => 'add'
+                            'action' => 'add',
+                            'prefix' => false,
                         ], [
                             'class' => 'nav-link',
                             'id' => 'add'
@@ -106,12 +113,39 @@
                     <?= $this->Html->link('<i class="fa fa-gear"></i>', [
                         'controller' => 'Users',
                         'action' => 'settings',
+                        'prefix' => false,
                     ], [
                         'class' => 'nav-link',
                         'escape' => false
                     ]); ?>
                 <?php endif; ?>
             </li>
+            <?php if (isset($user->id)): ?>
+            <li class="nav-item active">
+                <?php if($user->hasPermission('mod_pages_landing')): ?>
+                    <?= $this->Html->link('<i class="fa fa-star"></i> MOD', [
+                        'controller' => 'Pages',
+                        'action' => 'landing',
+                        'prefix' => 'mod',
+                    ], [
+                        'class' => 'nav-link',
+                        'escape' => false
+                    ]); ?>
+                <?php endif; ?>
+            </li>
+            <li class="nav-item active">
+                <?php if($user->hasPermission('admin_index')): ?>
+                    <?= $this->Html->link('<i class="fa fa-bolt"></i> ACP', [
+                        'controller' => 'Pages',
+                        'action' => 'landing',
+                        'prefix' => 'admin',
+                    ], [
+                        'class' => 'nav-link',
+                        'escape' => false
+                    ]); ?>
+                <?php endif; ?>
+            </li>
+            <?php endif; ?>
         </ul>
     </div>
 </nav>
@@ -119,10 +153,12 @@
     <section class="brcrmb">
         <div class="container">
             <div class="col-md-12">
-                <?= $this->Html->getCrumbList([
-                    'lastClass' => 'active',
-                    'class' => 'breadcrumb'
-                ], 'Homepagina'); ?>
+                <div class="row">
+                    <?= $this->Html->getCrumbList([
+                        'lastClass' => 'active',
+                        'class' => 'breadcrumb'
+                    ], 'Homepagina'); ?>
+                </div>
             </div>
         </div>
     </section>

@@ -45,6 +45,7 @@ class AppController extends Controller
         $this->loadModel('Sections');
         $this->loadModel('Forums');
         $this->loadModel('Threads');
+        $this->loadModel('Comments');
 
         /*
          * Loading custom components

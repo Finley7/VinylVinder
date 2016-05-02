@@ -33,6 +33,9 @@ class UsersTable extends Table
         $this->hasMany('UserPreferences', [
             'foreignKey' => 'user_id'
         ]);
+        $this->hasMany('Warnings', [
+            'foreignKey' => 'warned_user'
+        ]);
         $this->belongsToMany('Roles', [
                 'joinTable' => 'roles_users'
             ]

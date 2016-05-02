@@ -99,7 +99,9 @@ body, html {
     margin-top: 10px;
     margin-bottom: 10px
 }
-
+.user-information {
+    list-style-type:none;
+}
 .topic-title-bar h3::before {
     font-family: "FontAwesome";
     padding: 0 5px 0 0px;
@@ -109,7 +111,9 @@ body, html {
     font-size: 16px;
     margin: 0
 }
-
+.profile {
+    margin: 0px 20px;
+}
 .post-container {
     background-color: #FFF;
     border-radius: 4px;
@@ -118,7 +122,10 @@ body, html {
     margin-bottom: 20px;
     border: 1px solid #D8D8D8
 }
-
+.label-Administrator:before {
+    font-family: "FontAwesome";
+    content:"\f0e7";
+}
 .post-container.deleted {
     background: #FFE6E8 none repeat scroll 0% 0%
 }
@@ -176,7 +183,7 @@ body, html {
     margin-left: 10px
 }
 
-.User {
+.Gebruiker {
     font-weight: 500;
     color:#000;
 }
@@ -320,7 +327,7 @@ body, html {
 .label-Administrator {
     background:#c0392b;
 }
-.label-User {
+.label-Gebruiker {
     background:#333;
     color:#fff;
 }

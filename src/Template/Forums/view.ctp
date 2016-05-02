@@ -24,7 +24,7 @@ $this->Html->addCrumb($forum->name);
                                         <i class="fa fa-file-text"></i>
                                     </div>
                                     <?= $this->Html->link($subforum->title, [
-                                        'controller' => 'Forums',
+                                        'controller' => 'Subforums',
                                         'action' => 'view',
                                         $subforum->id
                                     ]); ?>

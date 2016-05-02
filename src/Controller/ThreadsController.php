@@ -117,7 +117,7 @@ class ThreadsController extends AppController
 
             $this->request->data['slug'] = $ceo_split;
 
-            $this->request->data['subforum_id'] = ($this->request->data['subforum'] == "null") ? null : $this->request->data['subforum'];
+            $this->request->data['subforum_id'] = isset($this->request->data['subforum']) ? null : $this->request->data['subforum'];
             $this->request->data['body'] = h($this->request->data['body']);
 
             $thread->edit_by = $this->Auth->user('id');

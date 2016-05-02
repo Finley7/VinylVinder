@@ -106,6 +106,50 @@ class CommentsController extends AppController
         $this->set('_serialize', ['comment']);
     }
 
+    public function quote($comment_id = null)
+    {
+        $old_comment = $this->Comments->get($comment_id, ['contain' => ['Users']]);
+        $thread = $this->Threads->get($old_comment->thread_id);
+
+        if($old_comment->deleted) {
+            $this->Flash->error(__('Deze reactie is niet meer beschikbaar!'));
+            return $this->redirect(['controller' => 'Threads', 'action' => 'view', $old_comment->thread->id]);
+        }
+
+        $comment = $this->Comments->newEntity();
+        if ($this->request->is('post')) {
+
+            $this->request->data['thread_id'] = $thread->id;
+            $this->request->data['author_id'] = $this->Auth->user('id');
+            $this->request->data['body'] = h($this->request->data['body']);
+
+            $comment = $this->Comments->patchEntity($comment, $this->request->data);
+
+            if ($this->Comments->save($comment) && $this->Threads->touch($thread, 'Threads.replied')) {
+
+                $thread->lastposter_id = $this->Auth->user('id');
+
+                if ($this->Threads->save($thread)) {
+                    $this->Flash->success(__('The comment has been saved.'));
+
+                    return $this->redirect([
+                        'controller' => 'Threads',
+                        'action' => 'view',
+                        $thread->id,
+                        $thread->slug,
+                        '?' => ['action' => 'lastpost']
+                    ]);
+                }
+            }
+            else {
+                $this->Flash->error(__('The comment could not be saved. Please, try again.'));
+            }
+        }
+
+        $this->set(compact('old_comment', 'thread', 'comment'));
+        $this->set('page_parent', 'community');
+    }
+
     /**
      * Edit method
      *
