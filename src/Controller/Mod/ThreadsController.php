@@ -93,10 +93,6 @@ class ThreadsController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
-    /**
-     * @param $thread_id
-     * @return \Cake\Network\Response|null
-     */
     public function close($thread_id)
     {
         $this->request->allowMethod(['post',]);
@@ -121,10 +117,6 @@ class ThreadsController extends AppController
         ]);
     }
 
-    /**
-     * @param $thread_id
-     * @return \Cake\Network\Response|null
-     */
     public function open($thread_id)
     {
         $this->request->allowMethod(['post',]);
@@ -147,55 +139,5 @@ class ThreadsController extends AppController
             $thread->slug,
             '?' => ['action' => 'lastpost']
         ]);
-    }
-
-    public function move($thread_id)
-    {
-        $this->loadModel('Subforums');
-
-        $thread = $this->Threads->get($thread_id);
-        $forums = $this->Forums->find('list')->contain(['Subforums']);
-        $subforums = $this->Subforums->find('list');
-
-        if($this->request->is('post'))
-        {
-            if(!isset($this->request->data['forum_type']))
-            {
-                $this->Flash->error(__('Je hebt geen forum type geselecteerd!'));
-            }
-            else
-            {
-                if($this->request->data['forum_type'] == 'forum') {
-                    $thread->forum_id = h($this->request->data['forum_id']);
-                }
-                else
-                {
-                    $parentForum = $this->Subforums->get(h($this->request->data['subforum_id']));
-
-                    $thread->forum_id = $parentForum->parent_forum;
-                    $thread->subforum_id = h($this->request->data['subforum_id']);
-                }
-
-                if($this->Threads->save($thread))
-                {
-                    $this->Flash->success(__('De thread is verplaatst!'));
-                    return $this->redirect([
-                        'action' => 'view',
-                        'prefix' => false,
-                        $thread->id,
-                        $thread->slug,
-                        '?' => ['action' => 'lastpost']
-                    ]);
-                }
-                else
-                {
-                    $this->Flash->error(__('Er is iets fout gegaan tijdens het opslaan!'));
-                }
-            }
-        }
-
-        $this->set('page_parent', 'mod');
-        $this->set(compact('thread', 'forums', 'subforums'));
-        $this->set('title', __('Verplaats thread {0}', $thread->title));
     }
 }

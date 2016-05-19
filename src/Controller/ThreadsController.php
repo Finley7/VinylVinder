@@ -56,7 +56,7 @@ class ThreadsController extends AppController
             'contain' => ['Users' => ['PrimaryRole']]
         ];
 
-        $replies = $this->Comments->findByThreadId($id)->contain(['Editor', 'Users' => ['PrimaryRole']]);
+        $replies = $this->Comments->findByThreadId($id)->contain(['Users' => ['PrimaryRole']]);
 
 
         $thread = $this->Threads->get($id, [
@@ -67,7 +67,7 @@ class ThreadsController extends AppController
                 'Editor',
                 'Comments' => [
                     'Users' => ['PrimaryRole'],
-                    'Threads',
+                    'Threads'
                 ]
             ]
         ]);
@@ -80,35 +80,6 @@ class ThreadsController extends AppController
                     $thread->slug,
                     '?' => ['page' => ceil($replies->count() / 7)],
                     '#' => 'pid' . $replies->last()->id
-                ]);
-            }
-
-            if (isset($this->request->query['pid'])) {
-                $postCount = 0;
-                $postPosition = null;
-
-                $replyQuery = $this->Comments->findByThreadId($thread->id)
-                    ->select(['id'])
-                    ->where(['deleted' => 0])
-                    ->order(['created_at' => 'ASC']);
-
-                foreach ($replyQuery as $reply) {
-                    $postCount++;
-                    if ($reply->id == $this->request->query['pid']) {
-                        $postPosition = $postCount;
-                    }
-                }
-
-                if (is_null($postPosition)) {
-                    return false;
-                }
-
-                $this->redirect([
-                    'action' => 'view',
-                    $thread->id,
-                    $thread->slug,
-                    '?' => ['page' => ceil($postPosition / 7)],
-                    '#' => 'pid' . h($this->request->query['pid'])
                 ]);
             }
         }
@@ -189,16 +160,12 @@ class ThreadsController extends AppController
 
         $forum = $this->Forums->get($thread->forum_id, ['contain' => 'Subforums']);
 
-        if ($thread->user->id != $this->Auth->user('id')) {
+        if($thread->user->id != $this->Auth->user('id'))
+        {
             throw new MethodNotAllowedException();
         }
 
-        if ($this->request->is([
-            'patch',
-            'post',
-            'put'
-        ])
-        ) {
+        if ($this->request->is(['patch', 'post', 'put'])) {
 
             $thread = $this->Threads->patchEntity($thread, $this->request->data);
 

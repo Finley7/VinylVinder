@@ -98,10 +98,6 @@ Router::scope('/forum', function(RouteBuilder $routes){
     ]);
 });
 
-Router::prefix('ajax', ['prefix' => 'ajax'], function($routes){
-
-});
-
 Router::prefix('admin', ['prefix' => 'admin'], function($routes){
     $routes->connect('/', ['controller' => 'Pages', 'action' => 'landing']);
     $routes->connect('/dashboard', ['controller' => 'Pages', 'action' => 'landing', 'home']);
@@ -121,8 +117,6 @@ Router::prefix('mod', ['prefix' => 'mod'], function($routes){
         $routes->connect('/title', ['controller' => 'SiteSettings', 'action' => 'title']);
     });
     $routes->connect('/users', ['controller' => 'Users']);
-    $routes->connect('comments', ['controller' => 'Comments']);
-
     $routes->fallbacks('DashedRoute');
 });
 

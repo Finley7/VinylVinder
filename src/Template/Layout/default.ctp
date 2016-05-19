@@ -13,8 +13,6 @@
     <?= $this->Html->css('shCore.css') ?>
     <?= $this->Html->css('shThemeDefault.css') ?>
     <?= $this->Html->css('font-awesome.min.css') ?>
-    <?= $this->Html->css('amaran.min.css'); ?>
-    <?= $this->Html->css('animate.min.css'); ?>
     <?= $this->Html->css('base.css') ?>
 
     <?= $this->fetch('meta') ?>
@@ -28,7 +26,6 @@
     <?= $this->Html->script('shCore.js'); ?>
     <?= $this->Html->script('shLegacy.js'); ?>
     <?= $this->Html->script('shBrushPhp.js'); ?>
-    <?= $this->Html->script('jquery.amaran.min.js'); ?>
 </head>
 <body>
 <?= $this->Flash->render() ?>
@@ -137,7 +134,7 @@
                 <?php endif; ?>
             </li>
             <li class="nav-item active">
-                <?php if($user->hasPermission('admin_pages_landing')): ?>
+                <?php if($user->hasPermission('admin_index')): ?>
                     <?= $this->Html->link('<i class="fa fa-bolt"></i> ACP', [
                         'controller' => 'Pages',
                         'action' => 'landing',
@@ -159,10 +156,8 @@
                 <div class="row">
                     <?= $this->Html->getCrumbList([
                         'lastClass' => 'active',
-                        'class' => 'breadcrumb',
-                        'escape' => false
-                    ], '<i class="fa fa-play-circle" aria-hidden="true"></i>
- Vinylvinder'); ?>
+                        'class' => 'breadcrumb'
+                    ], 'Homepagina'); ?>
                 </div>
             </div>
         </div>

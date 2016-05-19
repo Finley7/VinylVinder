@@ -4,7 +4,6 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
-use Cake\Event\Event;
 
 /**
  * Forums Controller
@@ -14,10 +13,6 @@ use Cake\Event\Event;
  */
 class ForumsController extends AppController
 {
-    public function beforeFilter(Event $event)
-    {
-        $this->Auth->allow(['index']);
-    }
 
     /**
      * Index method
