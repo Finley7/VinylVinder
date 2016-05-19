@@ -8,6 +8,10 @@
         <?= isset($title) ? $title : $this->fetch('title') ?>
     </title>
     <?= $this->Html->meta('icon') ?>
+    <?= $this->Html->meta('description', 'Een forum voor muziekliefhebbers!'); ?>
+    <?= $this->Html->meta('title', 'Vinylvinder ~ ' . isset($title) ? $title : $this->fetch('title')); ?>
+    <?= $this->Html->meta('keywords', 'muziek,vinyl,cd,forum,discussiebord,genesis,pink floyd'); ?>
+    <?= $this->Html->meta('google-site-verification', 'WmAm1iIazYcUQw-HEkC2x-5c1RbVm0rEHO0I2peuMuU'); ?>
 
     <?= $this->Html->css('bootstrap.min.css') ?>
     <?= $this->Html->css('shCore.css') ?>
