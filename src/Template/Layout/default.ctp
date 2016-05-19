@@ -3,15 +3,18 @@
 <head>
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
     <title>
         VinylVinder |
         <?= isset($title) ? $title : $this->fetch('title') ?>
     </title>
     <?= $this->Html->meta('icon') ?>
-    <?= $this->Html->meta('description', 'Een forum voor muziekliefhebbers!'); ?>
+    <?= $this->Html->meta('description', 'Vinylvinder: Een forum voor muziekliefhebbers!'); ?>
     <?= $this->Html->meta('title', 'Vinylvinder ~ ' . isset($title) ? $title : $this->fetch('title')); ?>
     <?= $this->Html->meta('keywords', 'muziek,vinyl,cd,forum,discussiebord,genesis,pink floyd'); ?>
     <?= $this->Html->meta('google-site-verification', 'WmAm1iIazYcUQw-HEkC2x-5c1RbVm0rEHO0I2peuMuU'); ?>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="author" content="Finley Siebert">
 
     <?= $this->Html->css('bootstrap.min.css') ?>
     <?= $this->Html->css('shCore.css') ?>
