@@ -187,7 +187,7 @@ $this->Html->addCrumb($thread->title);
                             <hr>
                             <?= $this->Ubb->parse($comment->body); ?>
                             <hr>
-                            <?= $this->Ubb->parse($thread->user->autograph); ?>
+                            <?= $this->Ubb->parse($comment->user->autograph); ?>
                         </div>
                         <div class="pull-right">
                         <?php if ($user->hasPermission('mod_comments_delete')): ?>

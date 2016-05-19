@@ -166,6 +166,11 @@ class UsersController extends AppController
     {
         $profile = $this->Users->findByUsername($username)->contain(['PrimaryRole'])->first();
 
+        if(is_null($profile->first()))
+        {
+            throw new NotFoundException("Gebruiker niet gevonden");
+        }
+
         $threads = $this->Threads->findByAuthorId($profile->id);
         $comments = $this->Comments->findByAuthorId($profile->id);
 
