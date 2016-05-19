@@ -79,7 +79,7 @@ $RECYCLE.BIN/
 /config/app.php
 /tmp/*
 /logs/*
-/webroot/img/uploads/avatars/*
+
 
 # CakePHP 2
 
