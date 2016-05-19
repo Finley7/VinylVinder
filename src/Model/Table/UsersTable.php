@@ -26,6 +26,13 @@ class UsersTable extends Table
     {
         parent::initialize($config);
 
+        $this->addBehavior('Timestamp',
+            ['events' => [
+                'Model.beforeSave' => [
+                    'created_at' => 'new',
+                ]
+            ]]);
+
         $this->table('users');
         $this->displayField('id');
         $this->primaryKey('id');

@@ -30,7 +30,11 @@ class CommentsTable extends Table
             ['events' => [
                 'Model.beforeSave' => [
                     'created_at' => 'new',
-                ]
+                    'updated_at' => 'new'
+                ],
+                'Comments.edited' => [
+                    'updated_at' => 'always'
+                ],
             ]]);
 
         $this->table('comments');
@@ -44,6 +48,11 @@ class CommentsTable extends Table
         $this->belongsTo('Users', [
             'foreignKey' => 'author_id',
             'joinType' => 'INNER'
+        ]);
+        $this->belongsTo('Editor', [
+            'className' => 'Users',
+            'foreignKey' => 'edit_by',
+            'joinType' => 'LEFT'
         ]);
     }
 

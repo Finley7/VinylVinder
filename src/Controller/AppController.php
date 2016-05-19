@@ -17,6 +17,7 @@ namespace App\Controller;
 use App\Model\Entity\User;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
+use Cake\Network\Exception\ForbiddenException;
 
 /**
  * Application Controller
@@ -58,7 +59,7 @@ class AppController extends Controller
         $this->loadComponent('Csrf');
 
         $this->loadComponent('Auth', [
-            'authError' => __("Je hebt geen toegang om deze locatie te bezoeken!"),
+            'authError' => __("Je hebt geen toegang om deze locatie te bezoeken, of je moet ingelogd zijn!"),
             'authorize' => 'VinylVinder',
             'unauthorizedRedirect' => '/',
             'prefix' => false,
@@ -77,9 +78,27 @@ class AppController extends Controller
             ],
         ]);
 
-        if($this->Auth->user())
-        {
-            $this->set('user', new User($this->Auth->user()));
+        if ($this->Auth->user()) {
+            $user = new User($this->Auth->user());
+            $this->set('user', $user);
+
+            if ($this->Auth->user('primary_role') == 3) {
+                $this->Flash->error(__('Je bent verbannen!'));
+                throw new ForbiddenException('Je bent verbannen');
+            }
+
+            if($user->hasPermission('mod_reports_index'))
+            {
+                $this->loadModel('Reports');
+
+                $reports = $this->Reports->findByHandled(0)->select(['id']);
+                if($reports->count() > 0) {
+                    $this->Flash->default(__('Er zijn {0} ongelezen aangegeven berichten!', [
+                        $reports->count()
+                    ]));
+                }
+            }
+
         }
     }
 
@@ -92,7 +111,10 @@ class AppController extends Controller
     public function beforeRender(Event $event)
     {
         if (!array_key_exists('_serialize', $this->viewVars) &&
-            in_array($this->response->type(), ['application/json', 'application/xml'])
+            in_array($this->response->type(), [
+                'application/json',
+                'application/xml'
+            ])
         ) {
             $this->set('_serialize', true);
         }

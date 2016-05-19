@@ -68,7 +68,7 @@ class ThreadsTable extends Table
         $this->belongsTo('Editor', [
             'className' => 'Users',
             'foreignKey' => 'edit_by',
-            'joinType' => 'INNER'
+            'joinType' => 'LEFT'
         ]);
     }
 
