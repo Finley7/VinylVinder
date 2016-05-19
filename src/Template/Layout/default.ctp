@@ -134,7 +134,7 @@
                 <?php endif; ?>
             </li>
             <li class="nav-item active">
-                <?php if($user->hasPermission('admin_index')): ?>
+                <?php if($user->hasPermission('admin_pages_landing')): ?>
                     <?= $this->Html->link('<i class="fa fa-bolt"></i> ACP', [
                         'controller' => 'Pages',
                         'action' => 'landing',
