@@ -37,6 +37,7 @@ class UbbHelper extends Helper
         $string = self::image($string);
         $string = self::quote($string);
         $string = self::code($string);
+        $string = self::video($string);
         $string = ((true) ? self::smilies($string) : $string);
 
         $string = (($emojione) ? self::emo($string) : $string);
@@ -250,6 +251,13 @@ class UbbHelper extends Helper
     public static function code($string)
     {
         $bbcode = preg_replace("_\[code\](.*?)\[/code\]_si", '<pre class="brush: php">$1</pre>', $string);
+
+        return $bbcode;
+    }
+
+    public static function video($string)
+    {
+        $bbcode = preg_replace("_\[video\](.*?)\[/video\]_si", '<iframe width="560" height="315" src="https://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe>', $string);
 
         return $bbcode;
     }
