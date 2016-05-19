@@ -166,7 +166,7 @@ class UsersController extends AppController
     {
         $profile = $this->Users->findByUsername($username)->contain(['PrimaryRole'])->first();
 
-        if(is_null($profile->first()))
+        if(is_null($profile))
         {
             throw new NotFoundException("Gebruiker niet gevonden");
         }
