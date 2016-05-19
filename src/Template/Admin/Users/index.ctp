@@ -27,7 +27,7 @@
                                 <?= $this->Html->link($member->username, [
                                     'controller' => 'Users',
                                     'action' => 'view',
-                                    $member->id
+                                    $member->username
                                 ], ['style' => 'color:inherit;']); ?>
                             </span></td>
                                     <td><?= $member->email; ?></td>

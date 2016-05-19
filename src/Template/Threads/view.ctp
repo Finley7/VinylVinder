@@ -26,7 +26,7 @@ $this->Html->addCrumb($thread->title);
                                 <?= $this->Html->link($thread->user->username, [
                                     'controller' => 'Users',
                                     'action' => 'view',
-                                    $thread->user->id
+                                    $thread->user->username
                                 ], ['style' => 'color:inherit;']); ?>
                             </span>
                                 <br>
@@ -129,7 +129,7 @@ $this->Html->addCrumb($thread->title);
                                   class="<?= $comment->user->primary_role->name; ?>"><?= $this->Html->link($comment->user->username, [
                                     'controller' => 'Users',
                                     'action' => 'view',
-                                    $comment->user->id
+                                    $comment->user->username
                                 ], ['style' => 'color:inherit;']); ?></span>
                             <br>
                             <span
@@ -228,7 +228,7 @@ $this->Html->addCrumb($thread->title);
                                   class="<?= $comment->user->primary_role->name; ?>"><?= $this->Html->link($comment->user->username, [
                                     'controller' => 'Users',
                                     'action' => 'view',
-                                    $comment->user->id
+                                    $comment->user->username
                                 ], ['style' => 'color:inherit;']); ?></span>
                                     <br>
                             <span

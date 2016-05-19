@@ -80,7 +80,7 @@
                     <?= $this->Html->link(' ' . $user->username, [
                         'controller' => 'Users',
                         'action' => 'view',
-                        $user->id,
+                        $user->username,
                         'prefix' => false,
                     ], [
                         'class' => 'nav-link',

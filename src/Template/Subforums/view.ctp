@@ -46,7 +46,7 @@ $this->Html->addCrumb($subforum->title);
                                     <?= $this->Html->link("<span class='" . $thread->lastposter->primary_role->name . "'>" . $thread->lastposter->username . "</span>", [
                                         'controller' => 'Users',
                                         'action' => 'view',
-                                        $thread->lastposter->id
+                                        $thread->lastposter->username
                                     ], ['escape' => false]); ?><br/>
                                     <small><?= $thread->lastpost_date->timeAgoInWords(); ?></small>
                                 </div>

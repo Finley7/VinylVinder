@@ -162,9 +162,9 @@ class UsersController extends AppController
      * @return Object Redirects on successful add, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view($username = null)
     {
-        $profile = $this->Users->get($id, ['contain' => 'PrimaryRole']);
+        $profile = $this->Users->findByUsername($username)->contain(['PrimaryRole'])->first();
 
         $threads = $this->Threads->findByAuthorId($profile->id);
         $comments = $this->Comments->findByAuthorId($profile->id);
