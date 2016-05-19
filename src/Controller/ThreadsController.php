@@ -56,7 +56,10 @@ class ThreadsController extends AppController
             'contain' => ['Users' => ['PrimaryRole']]
         ];
 
-        $replies = $this->Comments->findByThreadId($id)->contain(['Editor', 'Users' => ['PrimaryRole']]);
+        $replies = $this->Comments
+            ->findByThreadId($id)
+            ->order(['Comments.created_at' => 'asc'])
+            ->contain(['Editor', 'Users' => ['PrimaryRole']]);
 
 
         $thread = $this->Threads->get($id, [
