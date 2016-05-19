@@ -55,7 +55,7 @@ class User extends Entity
     /**
      * @return array
      */
-    private function _getPermissions()
+    public function _getPermissions()
     {
         $_permissions = [];
 

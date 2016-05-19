@@ -24,12 +24,20 @@ class ForumsTable extends Table
     {
         parent::initialize($config);
 
+        $this->addBehavior('Timestamp',
+            ['events' => [
+                'Model.beforeSave' => [
+                    'created_at' => 'new',
+                    'updated_at' => 'new'
+                ],
+            ]]);
+
         $this->table('forums');
         $this->displayField('name');
         $this->primaryKey('id');
 
         $this->belongsTo('Sections', [
-            'foreignKey' => 'id',
+            'foreignKey' => 'section_id',
             'joinType' => 'INNER'
         ]);
 
@@ -60,14 +68,12 @@ class ForumsTable extends Table
             ->notEmpty('description');
 
         $validator
-            ->integer('min_role')
-            ->requirePresence('min_role', 'create')
-            ->notEmpty('min_role');
+            ->requirePresence('min_permission', 'create')
+            ->notEmpty('min_permission');
 
         $validator
             ->dateTime('created_at')
-            ->requirePresence('created_at', 'create')
-            ->notEmpty('created_at');
+            ->allowEmpty('created_at');
 
         $validator
             ->dateTime('updated_at')

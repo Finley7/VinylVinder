@@ -25,6 +25,14 @@ class SubforumsTable extends Table
     {
         parent::initialize($config);
 
+        $this->addBehavior('Timestamp',
+            ['events' => [
+                'Model.beforeSave' => [
+                    'created_at' => 'new',
+                    'updated_at' => 'new'
+                ],
+            ]]);
+
         $this->table('subforums');
         $this->displayField('title');
         $this->primaryKey('id');
@@ -55,9 +63,8 @@ class SubforumsTable extends Table
             ->notEmpty('parent_forum');
 
         $validator
-            ->integer('min_role')
-            ->requirePresence('min_role', 'create')
-            ->notEmpty('min_role');
+            ->requirePresence('min_permission', 'create')
+            ->notEmpty('min_permission');
 
         $validator
             ->requirePresence('title', 'create')
@@ -67,14 +74,6 @@ class SubforumsTable extends Table
             ->requirePresence('description', 'create')
             ->notEmpty('description');
 
-        $validator
-            ->dateTime('created_at')
-            ->requirePresence('created_at', 'create')
-            ->notEmpty('created_at');
-
-        $validator
-            ->dateTime('updated_at')
-            ->allowEmpty('updated_at');
 
         return $validator;
     }

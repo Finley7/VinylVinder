@@ -19,13 +19,11 @@ class ReportsController extends AppController
     public function add($thread_id = null, $comment_id = null)
     {
 
-        if(is_null($comment_id))
-        {
+        if (is_null($comment_id)) {
             $thread = $this->Threads->get($thread_id);
             $comment = null;
         }
-        else
-        {
+        else {
             $comment = $this->Comments->get($comment_id);
             $thread = $this->Threads->get($comment->thread_id);
         }
@@ -35,15 +33,23 @@ class ReportsController extends AppController
 
             $this->request->data['reported_by'] = $this->Auth->user('id');
             $this->request->data['thread_id'] = $thread->id;
-            $this->request->data['comment_id'] = !is_null($comment) ? $comment->id : 0;
+            $this->request->data['comment_id'] = !is_null($comment) ? $comment->id : null;
 
             $report = $this->Reports->patchEntity($report, $this->request->data);
 
 
             if ($this->Reports->save($report)) {
-                $this->Flash->success(__('The report has been saved.'));
-                return $this->redirect(['action' => 'index']);
-            } else {
+                $this->Flash->success(__('Bedankt voor je aangifte, we nemen hem zo snel mogelijk'));
+
+                return $this->redirect([
+                    'controller' => 'Threads',
+                    'action' => 'view',
+                    $thread->id,
+                    $thread->slug,
+                    '?' => ['action' => 'lastpost']
+                ]);
+            }
+            else {
                 $this->Flash->error(__('The report could not be saved. Please, try again.'));
             }
         }

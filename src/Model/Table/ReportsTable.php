@@ -30,6 +30,9 @@ class ReportsTable extends Table
             ['events' => [
                 'Model.beforeSave' => [
                     'created_at' => 'new',
+                ],
+                'Report.handled' => [
+                    'updated_at' => 'new'
                 ]
             ]]);
 
@@ -41,12 +44,13 @@ class ReportsTable extends Table
             'foreignKey' => 'thread_id'
         ]);
         $this->belongsTo('Comments', [
-            'foreignKey' => 'comment_id'
+            'foreignKey' => 'comment_id',
+            'joinType' => 'LEFT'
         ]);
         $this->belongsTo('Handler', [
             'className' => 'Users',
             'foreignKey' => 'handled_by',
-            'joinType' => 'INNER'
+            'joinType' => 'LEFT'
         ]);
 
         $this->belongsTo('Reporter', [

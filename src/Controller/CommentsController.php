@@ -2,6 +2,9 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\I18n\Time;
+use Cake\Network\Exception\MethodNotAllowedException;
+use Cake\Network\Exception\NotFoundException;
 
 /**
  * Comments Controller
@@ -72,6 +75,26 @@ class CommentsController extends AppController
         $comment = $this->Comments->newEntity();
         if ($this->request->is('post')) {
 
+            $lastReply = $this->Comments->findByAuthorId($this->Auth->user('id'))->last();
+
+            if (!is_null($lastReply)) {
+
+                if ($lastReply->author_id == $this->Auth->user('id')) {
+                    $lastReplyDate = new Time($lastReply->created_at);
+                    if ($lastReplyDate->toUnixString() + 30 > Time::now()->toUnixString()) {
+                        $this->Flash->error(__('Wacht aub nog {0} seconden voordat je een nieuwe reactie plaatst.', ($lastReplyDate->toUnixString() + 30) - Time::now()->toUnixString()));
+
+                        return $this->redirect([
+                            'controller' => 'Threads',
+                            'action' => 'view',
+                            $thread->id,
+                            $thread->slug,
+                            '?' => ['action' => 'lastpost']
+                        ]);
+                    }
+                }
+            }
+
             $this->request->data['thread_id'] = $thread->id;
             $this->request->data['author_id'] = $this->Auth->user('id');
             $this->request->data['body'] = h($this->request->data['body']);
@@ -111,13 +134,38 @@ class CommentsController extends AppController
         $old_comment = $this->Comments->get($comment_id, ['contain' => ['Users']]);
         $thread = $this->Threads->get($old_comment->thread_id);
 
-        if($old_comment->deleted) {
+        if ($old_comment->deleted) {
             $this->Flash->error(__('Deze reactie is niet meer beschikbaar!'));
-            return $this->redirect(['controller' => 'Threads', 'action' => 'view', $old_comment->thread->id]);
+
+            return $this->redirect([
+                'controller' => 'Threads',
+                'action' => 'view',
+                $old_comment->thread->id
+            ]);
         }
 
         $comment = $this->Comments->newEntity();
         if ($this->request->is('post')) {
+
+            $lastReply = $this->Comments->findByAuthorId($this->Auth->user('id'))->last();
+
+            if (!is_null($lastReply)) {
+
+                $lastReplyDate = new Time($lastReply->created_at);
+
+                if ($lastReplyDate->toUnixString() + 30 > Time::now()->toUnixString()) {
+                    $this->Flash->error(__('Wacht aub nog {0} seconden voordat je een nieuwe reactie plaatst.', ($lastReplyDate->toUnixString() + 30) - Time::now()->toUnixString()));
+
+                    return $this->redirect([
+                        'controller' => 'Threads',
+                        'action' => 'view',
+                        $thread->id,
+                        $thread->slug,
+                        '?' => ['action' => 'lastpost']
+                    ]);
+                }
+
+            }
 
             $this->request->data['thread_id'] = $thread->id;
             $this->request->data['author_id'] = $this->Auth->user('id');
@@ -160,51 +208,49 @@ class CommentsController extends AppController
     public function edit($id = null)
     {
         $comment = $this->Comments->get($id, [
-            'contain' => []
+            'contain' => [
+                'Users',
+                'Threads'
+            ]
         ]);
+
+        $thread = $this->Threads->get($comment->thread->id);
+
+        if ($comment->user->id != $this->Auth->user('id')) {
+            throw new NotFoundException("Niet gevonden!");
+        }
+
         if ($this->request->is([
-            'patch',
             'post',
-            'put'
+            'put',
+            'patch'
         ])
         ) {
+
+            $comment->edit_by = $this->Auth->user('id');
+
             $comment = $this->Comments->patchEntity($comment, $this->request->data);
-            if ($this->Comments->save($comment)) {
+            if ($this->Comments->touch($comment, 'Comments.edited') && $this->Comments->save($comment)) {
+
+
                 $this->Flash->success(__('The comment has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect([
+                    'controller' => 'Threads',
+                    'action' => 'view',
+                    $comment->thread->id,
+                    $comment->thread->slug,
+                    '?' => ['pid' => $comment->id]
+                ]);
             }
             else {
                 $this->Flash->error(__('The comment could not be saved. Please, try again.'));
             }
         }
-        $threads = $this->Comments->Threads->find('list', ['limit' => 200]);
-        $users = $this->Comments->Users->find('list', ['limit' => 200]);
-        $this->set(compact('comment', 'threads', 'users'));
+
+        $this->set(compact('comment', 'thread'));
+        $this->set('page_parent', 'community');
         $this->set('_serialize', ['comment']);
     }
 
-    /**
-     * Delete method
-     *
-     * @param string|null $id Comment id.
-     * @return \Cake\Network\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod([
-            'post',
-            'delete'
-        ]);
-        $comment = $this->Comments->get($id);
-        if ($this->Comments->delete($comment)) {
-            $this->Flash->success(__('The comment has been deleted.'));
-        }
-        else {
-            $this->Flash->error(__('The comment could not be deleted. Please, try again.'));
-        }
-
-        return $this->redirect(['action' => 'index']);
-    }
 }

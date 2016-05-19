@@ -60,7 +60,7 @@ class UsersController extends AppController
 
                 return $this->redirect('/');
             }
-            $this->Flash->error(__('Invalid username or password, try again'));
+            $this->Flash->error(__('Ongeldige gebruikersnaam/wachtwoord combinatie!'));
         }
 
         $this->set('title', 'Aanmelden');
@@ -121,13 +121,38 @@ class UsersController extends AppController
             }
             else
             {
-                $this->Flash->error(__('Er is dus iets fout gegaan!'));
+                $this->Flash->error(__('Er iets fout gegaan tijdens het opslaan!'));
             }
         }
 
         $this->set('editUser', $editUser);
 
         $this->set('page_parent', 'settings');
+    }
+
+    public function autograph()
+    {
+        $editUser = $this->Users->get($this->Auth->user('id'));
+
+        if($this->request->is(['post', 'put', 'patch']))
+        {
+            $editUser = $this->Users->patchEntity($editUser, $this->request->data);
+
+            if($this->Users->save($editUser))
+            {
+                $this->Auth->setUser($editUser->toArray());
+                $this->Flash->success(__('Je handtekening is aangepast'));
+                return $this->redirect(['action' => 'settings']);
+            }
+            else
+            {
+                $this->Flash->error(__('Er is iets fout gegaan tijdens het opslaan!'));
+            }
+        }
+
+        $this->set('editUser', $editUser);
+        $this->set('page_parent', 'settings');
+        $this->set('title', 'Bewerk je avatar');
     }
 
     /**
@@ -156,7 +181,7 @@ class UsersController extends AppController
     public function add()
     {
         if (!Configure::read('App.can_register')) {
-            $this->Flash->error(__('You can not register at this time. Please try again later'));
+            $this->Flash->error(__('Je kunt nu niet registreren, Probeer het later!'));
 
             return $this->redirect(['action' => 'login']);
         }
@@ -185,7 +210,7 @@ class UsersController extends AppController
                 ]
             ])
             ) {
-                $this->Flash->success(__('The user has been saved.'));
+                $this->Flash->success(__('Het account is aangemaakt. Je kunt nu inloggen!'));
 
                 return $this->redirect([
                     'controller' => 'users',
@@ -193,7 +218,7 @@ class UsersController extends AppController
                 ]);
             }
             else {
-                $this->Flash->error(__('The user could not be saved. Please, try again.'));
+                $this->Flash->error(__('Er is iets fout gegaan tijdens het registreren van het account!'));
             }
         }
 
