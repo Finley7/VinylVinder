@@ -143,6 +143,7 @@ class ThreadsController extends AppController
             $this->request->data['lastposter_id'] = $this->Auth->user('id');
             $this->request->data['forum_id'] = $forum->id;
             $this->request->data['author_id'] = $this->Auth->user('id');
+            $this->request->data['title'] = h($this->request->data['title']);
 
             $ceo_split = str_replace(' ', '-', $this->request->data['title']);
             $ceo_split = preg_replace("/[',.!:#$%^&*()_+ \/ <>~`@']/", "", $ceo_split);
