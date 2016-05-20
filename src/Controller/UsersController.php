@@ -198,6 +198,7 @@ class UsersController extends AppController
         ]);
         if ($this->request->is('post')) {
             $this->request->data['roles']['_ids'] = [1];
+            $this->request->data['username'] = h($this->request->data['username']);
             $this->request->data['primary_role'] = 1;
             $this->request->data['user_preferences']['_dob'] = $this->request->data['dob'];
             $user = $this->Users->patchEntity($user, $this->request->data, [

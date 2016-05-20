@@ -188,7 +188,10 @@ body, html {
     font-weight: 500;
     color:#000;
 }
-
+.Banned {
+    text-decoration: line-through;
+    color:#333;
+}
 .Administrator {
     font-weight: 700;
     color: #c0392b;
