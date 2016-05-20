@@ -32,6 +32,7 @@ class ReportsController extends AppController
         if ($this->request->is('post')) {
 
             $this->request->data['reported_by'] = $this->Auth->user('id');
+            $this->request->data['reason'] = h($this->request->data['reason']);
             $this->request->data['thread_id'] = $thread->id;
             $this->request->data['comment_id'] = !is_null($comment) ? $comment->id : null;
 
