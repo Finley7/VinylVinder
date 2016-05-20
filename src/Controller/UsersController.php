@@ -136,6 +136,7 @@ class UsersController extends AppController
 
         if($this->request->is(['post', 'put', 'patch']))
         {
+            $this->request->data['autograph'] = h($this->request->data['autograph']);
             $editUser = $this->Users->patchEntity($editUser, $this->request->data);
 
             if($this->Users->save($editUser))
