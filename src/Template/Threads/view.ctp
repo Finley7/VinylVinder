@@ -9,8 +9,21 @@ $this->Html->addCrumb($thread->title);
 <section class="main">
     <div class="container">
         <div class="row">
-            <?php if ($this->Paginator->current() == 1): ?>
             <div class="col-md-12">
+                <nav style="margin:0;padding:0;">
+                    <ul class="pagination pagination-sm">
+                        <li class="page-item">
+                            <?= $this->Paginator->prev(__('Back'), ['class' => 'page-link']) ?>
+                        </li>
+                        <li class="page-item">
+                            <?= $this->Paginator->numbers(['class' => 'page-link']); ?>
+                        </li>
+                        <li class="page-item">
+                            <?= $this->Paginator->next(__('Next'), ['class' => 'page-link']) ?>
+                        </li>
+                    </ul>
+                </nav>
+                <?php if ($this->Paginator->current() == 1): ?>
                 <div class="card">
                     <div class="card-header card-primary">
                         <?= $thread->title; ?>
@@ -114,6 +127,7 @@ $this->Html->addCrumb($thread->title);
                             </div>
                         <?php endif; ?>
                     </div>
+
                 </div>
                 <?php endif; ?>
                 <?php foreach ($replies as $comment): ?>
